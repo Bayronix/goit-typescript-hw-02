@@ -7,14 +7,24 @@ import Loader from "./Loader/Loader";
 import { toast, Toaster } from "react-hot-toast";
 import ImageModal from "./ImageModal/ImageModal";
 
+type ApiArticle = {
+  id: string;
+  title: string;
+  description: string;
+  urls: {
+    small: string;
+  };
+  alt_description?: string;
+};
+
 function App() {
-  const [articles, setArticles] = useState([]);
-  const [query, setQuery] = useState("");
-  const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [articles, setArticles] = useState<ApiArticle[]>([]);
+  const [query, setQuery] = useState<string>("");
+  const [page, setPage] = useState<number>(1);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
+  const [selectedImage, setSelectedImage] = useState<ApiArticle | null>(null);
 
   useEffect(() => {
     if (query) {
@@ -35,15 +45,16 @@ function App() {
         } catch (err) {
           setError("Failed to fetch images. Please try again.");
           toast.error("Failed to fetch images. Please try again.");
+        } finally {
+          setLoading(false);
         }
-        setLoading(false);
       };
 
       getArticles();
     }
   }, [query, page]);
 
-  const handleSearch = (newQuery) => {
+  const handleSearch = (newQuery: string) => {
     if (newQuery.trim() === "") {
       toast.error("Field is empty");
     } else {
@@ -58,7 +69,7 @@ function App() {
     setPage((prevPage) => prevPage + 1);
   };
 
-  const openModal = (image) => {
+  const openModal = (image: ApiArticle) => {
     setSelectedImage(image);
     setModalIsOpen(true);
   };
@@ -72,10 +83,16 @@ function App() {
     <>
       <SearchBar onSearch={handleSearch} />
       <Toaster position="top-right" />
-      <ImageGallery articles={articles} openModal={openModal} />
-      {loading && <Loader />}
-      {articles.length > 0 && !loading && !error && (
-        <LoadMoreBtn onClick={handleLoadMore} />
+      {loading && articles.length === 0 ? (
+        <Loader />
+      ) : (
+        <>
+          <ImageGallery articles={articles} openModal={openModal} />
+          {error && <p>{error}</p>}
+          {articles.length > 0 && !loading && !error && (
+            <LoadMoreBtn onClick={handleLoadMore} />
+          )}
+        </>
       )}
       <ImageModal
         isOpen={modalIsOpen}

@@ -13,8 +13,18 @@ const customStyles = {
     transform: "translate(-50%, -50%)",
   },
 };
+type ImageModalProps = {
+  isOpen: boolean;
+  onRequestClose: () => void;
+  image: {
+    urls: {
+      regular: string;
+    };
+    alt_description?: string;
+  } | null; // Allow image to be null if not provided
+};
 
-function ImageModal({ isOpen, onRequestClose, image }) {
+function ImageModal({ isOpen, onRequestClose, image }: ImageModalProps) {
   return (
     <Modal
       isOpen={isOpen}

@@ -1,6 +1,8 @@
 import PropTypes from "prop-types";
-
-export default function ErrorMessage({ message }) {
+type ErrorMessageProp = {
+  message: string;
+};
+export default function ErrorMessage({ message }: ErrorMessageProp) {
   return (
     <div style={{ color: "red", textAlign: "center", margin: "20px 0" }}>
       {message}

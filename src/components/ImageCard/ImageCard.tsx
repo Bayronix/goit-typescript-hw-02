@@ -2,7 +2,22 @@ import React from "react";
 import PropTypes from "prop-types";
 import styles from "./ImageCard.module.css";
 
-function ImageCard({ image, openModal }) {
+type Article = {
+  src: string;
+  alt: string;
+
+  urls: {
+    small: string;
+  };
+  alt_description?: string;
+};
+
+type imageCardProp = {
+  openModal: (image: Article) => void;
+  image: Article;
+};
+
+function ImageCard({ image, openModal }: imageCardProp) {
   return (
     <li className={styles.li}>
       <img
